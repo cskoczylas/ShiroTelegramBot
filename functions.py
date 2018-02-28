@@ -4,12 +4,12 @@ from random import randint
 import telegram, os, time, re
 from discover import Discover
 from smartbulb import SmartBulb
+import config
 
 #directory path and moderator username
-picPath = '/botpics'
-#adminName = 'ShiroTheTiger'
-adminName = 'ShiroTheTest'
-userNames = ['ShiroTheTiger', 'TehSteak', 'ShiroTheTest']
+picPath = config.picPath
+adminName = config.adminName
+userNames = config.userNames
 startTime = time.time()
 lights = []
 animalFolders = []
