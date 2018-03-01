@@ -1,14 +1,16 @@
 from protocol import TPLinkSmartHomeProtocol
 from typing import Optional, Dict, Tuple
 
-text1 = "smartlife.iot.smartbulb.lightingservice"
-text2 = "transition_light_state"
 
 class SmartBulb(object):
+	#simple text used for JSON queries to lightbulb
+	cmd1 = "smartlife.iot.smartbulb.lightingservice"
+	cmd2 = "transition_light_state"
+
+	#creates a new SmartBulb instance
 	def __init__(self,
 		     	 host: str,
 		     	 protocol: 'TPLinkSmartHomeProtocol' = None) -> None:
-		#creating new SmartBulb instance
 		self.host = host
 		if not protocol:
 			protocol = TPLinkSmartHomeProtocol()
@@ -18,6 +20,10 @@ class SmartBulb(object):
 			  		  target: str,
 			  		  cmd: str,
 			  		  arg: Optional[Dict] = None) -> None:
+		"""
+		sends a query of a JSON object using protocol.py
+		protocol.query returns a JSON object
+		"""
 		if arg is None:
 			arg = {}
 		try:
@@ -29,38 +35,44 @@ class SmartBulb(object):
 			pass
 		return response[target][cmd]
 
-	def state(self, bulb_state: str) -> None:
-		#Turn the bulb ON or OFF
+	#turns the light ON or OFF
+	def state(self,
+			  bulb_state: str) -> None:
 		if bulb_state == 'ON':
 			new_state = 1
 		else:
 			new_state = 0
 		light_state = {"on_off": new_state,}
 			
-		self._query_helper(text1, text2, light_state)		 
+		self._query_helper(cmd1, cmd2, light_state)		 
 
+	#switches bulb ON if state is currently 'OFF' and vice versa
 	def switch_state(self) -> None:
-		#Switches bulb ON if OFF and vice versa
-		lightState = self._query_helper(text1, "get_light_state")
+		#getting current state of light bulb
+		lightState = self._query_helper(cmd1, "get_light_state")
 		if lightState['on_off']:
 			self.state('OFF')
 		else:
 			self.state('ON')
 
-	def brightness(self, brightness: int) -> None:
-		#Sets the brightness [0: 100]
+	#sets the brightness of the bulb from range [0: 100]
+	def brightness(self,
+				   brightness: int) -> None:
 		light_state = {"brightness": brightness,}
 		
-		self._query_helper(text1, text2, light_state)
+		self._query_helper(cmd1, cmd2, light_state)
 
-	def color_temp(self, temp: int) -> None:
-		#sets color temperature of bulb [2500: 9000k]
+	#sets the color temperature of the bulb from range [2500: 9000]
+	def color_temp(self,
+				   temp: int) -> None:
 		light_state = {"color_temp": temp,}
 
-		self._query_helper(text1, text2, light_state)
+		self._query_helper(cmd1, cmd2, light_state)
 
-	def rgb(self, rgb: Tuple[int, int, int]) -> None:
-		#RGB -> HSV then set color
+	#takes in RGB tuple and converts it to HSV, the sets bulb color
+	def rgb(self,
+			rgb: Tuple[int, int, int]) -> None:
+		#RGB -> HSV process
 		r, g, b = rgb[0]/255.0, rgb[1]/255.0, rgb[2]/255.0
 		mx = max(r, g, b)
 		mn = min(r, g, b)
@@ -79,8 +91,6 @@ class SmartBulb(object):
 			s = (diff/mx) * 100
 		v = (mx) * 100
 
-		#print("{} {} {}".format(h, s, v))
-
 		light_state = {
 			"hue": h,
 			"saturation": s,
@@ -88,4 +98,4 @@ class SmartBulb(object):
 			"color_temp": 0
 			}
 
-		self._query_helper(text1, text2, light_state)
+		self._query_helper(cmd1, cmd2, light_state)
