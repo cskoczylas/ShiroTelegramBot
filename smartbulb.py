@@ -44,12 +44,12 @@ class SmartBulb(object):
 			new_state = 0
 		light_state = {"on_off": new_state,}
 			
-		self._query_helper(cmd1, cmd2, light_state)		 
+		self._query_helper(self.cmd1, self.cmd2, light_state)		 
 
 	#switches bulb ON if state is currently 'OFF' and vice versa
 	def switch_state(self) -> None:
 		#getting current state of light bulb
-		lightState = self._query_helper(cmd1, "get_light_state")
+		lightState = self._query_helper(self.cmd1, "get_light_state")
 		if lightState['on_off']:
 			self.state('OFF')
 		else:
@@ -60,14 +60,14 @@ class SmartBulb(object):
 				   brightness: int) -> None:
 		light_state = {"brightness": brightness,}
 		
-		self._query_helper(cmd1, cmd2, light_state)
+		self._query_helper(self.cmd1, self.cmd2, light_state)
 
 	#sets the color temperature of the bulb from range [2500: 9000]
 	def color_temp(self,
 				   temp: int) -> None:
 		light_state = {"color_temp": temp,}
 
-		self._query_helper(cmd1, cmd2, light_state)
+		self._query_helper(self.cmd1, self.cmd2, light_state)
 
 	#takes in RGB tuple and converts it to HSV, the sets bulb color
 	def rgb(self,
@@ -98,4 +98,4 @@ class SmartBulb(object):
 			"color_temp": 0
 			}
 
-		self._query_helper(cmd1, cmd2, light_state)
+		self._query_helper(self.cmd1, self.cmd2, light_state)
